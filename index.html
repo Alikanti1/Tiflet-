@@ -1,0 +1,42 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GPS Tracker</title>
+</head>
+<body>
+  <h2>جارٍ تحديد موقعك...</h2>
+  <script>
+    function sendLocation(lat, lon) {
+      const formUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSf1SU6UtEnyikzFBiRm9DmPqbU1LIgnM8s6wwUR2xQLA88KaQ/formResponse';
+      const data = new FormData();
+      data.append('entry.980016307', lat);  // Latitude
+      data.append('entry.1742258376', lon); // Longitude
+      fetch(formUrl, { method: 'POST', mode: 'no-cors', body: data })
+        .then(() => document.body.innerHTML = "<h2>📍 تم إرسال موقعك بنجاح</h2>")
+        .catch(() => document.body.innerHTML = "<h2>❌ فشل الإرسال</h2>");
+    }
+
+    function getLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          position => {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            sendLocation(lat, lon);
+          },
+          error => {
+            document.body.innerHTML = "<h2>⚠️ لم يتم السماح بالوصول إلى الموقع</h2>";
+          }
+        );
+      } else {
+        document.body.innerHTML = "<h2>❌ المتصفح لا يدعم تحديد الموقع</h2>";
+      }
+    }
+
+    getLocation();
+  </script>
+</body>
+</html>
